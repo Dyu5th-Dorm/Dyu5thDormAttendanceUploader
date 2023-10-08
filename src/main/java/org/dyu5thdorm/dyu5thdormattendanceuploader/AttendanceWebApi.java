@@ -29,6 +29,10 @@ public class AttendanceWebApi {
     private String password;
     @Value("${format.date}")
     private String dateFormat;
+    @Value("${s_smye}")
+    private String year;
+    @Value("${s_smty}")
+    private String semester;
     DateTimeFormatter dateTimeFormatter;
 
     @PostConstruct
@@ -57,24 +61,32 @@ public class AttendanceWebApi {
     }
 
     private HttpRequest prepareInsertRequest(List<String> students, LocalDate date) throws URISyntaxException {
+        String payload = getInsertPayload(students, date);
+        return prepareRequest(saveLink, payload);
+    }
+
+    private HttpRequest prepareLoginRequest() throws URISyntaxException {
+        String payload = getLoginPayload(account, password);
+        return prepareRequest(loginLink, payload);
+    }
+
+    public HttpRequest prepareRequest(String link, String payload) throws URISyntaxException {
         return HttpRequest
                 .newBuilder()
-                .uri(
-                        new URI(saveLink)
-                )
+                .uri(new URI(link))
                 .header("Content-Type", "application/x-www-form-urlencoded; charset=utf-8")
-                .POST(
-                        HttpRequest.BodyPublishers.ofString(
-                                getInsertPayload(students, date)
-                        )
-                )
+                .POST(HttpRequest.BodyPublishers.ofString(payload))
                 .build();
     }
 
     private String getInsertPayload(List<String> students, LocalDate date) {
         List<String> payload = new ArrayList<>();
-        payload.add("s_smye=112");
-        payload.add("s_smty=1");
+        payload.add(
+                String.format("s_smye=%s", year)
+        );
+        payload.add(
+                String.format("s_smty=%s", semester)
+        );
         payload.add(
                 String.format("s_dt=%s", date.format(dateTimeFormatter))
         );
@@ -83,21 +95,6 @@ public class AttendanceWebApi {
         }
         payload.add("dmuster_status=dmuster_add");
         return String.join("&", payload);
-    }
-
-    private HttpRequest prepareLoginRequest() throws URISyntaxException {
-        return HttpRequest
-                .newBuilder()
-                .uri(
-                        new URI(loginLink)
-                )
-                .header("Content-Type", "application/x-www-form-urlencoded; charset=utf-8")
-                .POST(
-                        HttpRequest.BodyPublishers.ofString(
-                                getLoginPayload(account, password)
-                        )
-                )
-                .build();
     }
 
     private String getLoginPayload(String account, String password) {
