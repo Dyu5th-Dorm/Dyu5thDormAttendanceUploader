@@ -1,6 +1,7 @@
 package org.dyu5thdorm.dyu5thdormattendanceuploader;
 
 import org.dyu5thdorm.dyu5thdormattendanceuploader.Repo.AttendanceRepo;
+import org.dyu5thdorm.dyu5thdormattendanceuploader.models.AttendanceRecord;
 import org.dyu5thdorm.dyu5thdormattendanceuploader.schedule.AutoAttendanceInsert;
 import org.dyu5thdorm.dyu5thdormattendanceuploader.service.AttendanceService;
 import org.junit.jupiter.api.Test;
@@ -9,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.time.LocalDate;
 
 @SpringBootTest
 class Dyu5thDormAttendanceUploaderApplicationTests {
@@ -23,7 +25,9 @@ class Dyu5thDormAttendanceUploaderApplicationTests {
 
     @Test
     void contextLoads() throws URISyntaxException, IOException, InterruptedException {
-        autoAttendanceInsert.run();
+        for (AttendanceRecord attendanceRecord : attendanceRepo.findByAttendanceDateOut(LocalDate.now(), 112, 1)) {
+            System.out.println(attendanceRecord);
+        }
     }
 
 }

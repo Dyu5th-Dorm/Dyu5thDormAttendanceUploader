@@ -16,7 +16,7 @@ public class AttendanceService {
         this.attendanceRepo = attendanceRepo;
     }
 
-    public Set<AttendanceRecord> findOutByDate(LocalDate localDate) {
-        return attendanceRepo.findByAttendanceDateOut(localDate);
+    public Set<AttendanceRecord> findOutByDate(LocalDate localDate, Integer year, Integer semester) {
+        return attendanceRepo.findByAttendanceDateOut(localDate, year, semester);
     }
 }

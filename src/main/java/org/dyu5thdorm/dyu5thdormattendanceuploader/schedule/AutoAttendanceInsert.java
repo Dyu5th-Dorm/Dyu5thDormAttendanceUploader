@@ -4,6 +4,7 @@ import org.dyu5thdorm.dyu5thdormattendanceuploader.AttendanceWebApi;
 import org.dyu5thdorm.dyu5thdormattendanceuploader.models.AttendanceRecord;
 import org.dyu5thdorm.dyu5thdormattendanceuploader.service.AttendanceService;
 import org.dyu5thdorm.dyu5thdormattendanceuploader.service.NoCallRollDateService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +23,11 @@ public class AutoAttendanceInsert {
     final
     NoCallRollDateService noCallRollDateService;
 
+    @Value("${s_smye}")
+    Integer year;
+    @Value("${s_smty}")
+    Integer semester;
+
     public AutoAttendanceInsert(AttendanceWebApi api, AttendanceService attendanceService, NoCallRollDateService noCallRollDateService) {
         this.api = api;
         this.attendanceService = attendanceService;
@@ -32,7 +38,7 @@ public class AutoAttendanceInsert {
     public void run() {
         LocalDate dayBefore = LocalDate.now().minusDays(1);
         if (noCallRollDateService.exists(dayBefore)) return;
-        Set<AttendanceRecord> attendanceOutRecord = attendanceService.findOutByDate(dayBefore);
+        Set<AttendanceRecord> attendanceOutRecord = attendanceService.findOutByDate(dayBefore, year, semester);
         List<String> outStudentIdList = attendanceOutRecord.stream().map(
                 e -> e.getStudent().getStudentId()
         ).toList();
