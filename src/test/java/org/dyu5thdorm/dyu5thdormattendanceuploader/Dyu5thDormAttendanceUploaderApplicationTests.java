@@ -25,9 +25,6 @@ class Dyu5thDormAttendanceUploaderApplicationTests {
 
     @Test
     void contextLoads() throws URISyntaxException, IOException, InterruptedException {
-        for (AttendanceRecord attendanceRecord : attendanceRepo.findByAttendanceDateOut(LocalDate.now(), 112, 1)) {
-            System.out.println(attendanceRecord);
-        }
     }
 
 }

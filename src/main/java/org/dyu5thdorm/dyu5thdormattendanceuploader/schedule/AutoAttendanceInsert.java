@@ -1,5 +1,6 @@
 package org.dyu5thdorm.dyu5thdormattendanceuploader.schedule;
 
+import jakarta.annotation.PostConstruct;
 import org.dyu5thdorm.dyu5thdormattendanceuploader.AttendanceWebApi;
 import org.dyu5thdorm.dyu5thdormattendanceuploader.models.AttendanceRecord;
 import org.dyu5thdorm.dyu5thdormattendanceuploader.service.AttendanceService;
@@ -10,7 +11,9 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -27,6 +30,14 @@ public class AutoAttendanceInsert {
     Integer year;
     @Value("${s_smty}")
     Integer semester;
+    @Value("${format.date}")
+    String dateFormat;
+    SimpleDateFormat formatter;
+
+    @PostConstruct
+    void init() {
+        formatter = new SimpleDateFormat(dateFormat);
+    }
 
     public AutoAttendanceInsert(AttendanceWebApi api, AttendanceService attendanceService, NoCallRollDateService noCallRollDateService) {
         this.api = api;
@@ -34,7 +45,7 @@ public class AutoAttendanceInsert {
         this.noCallRollDateService = noCallRollDateService;
     }
 
-    @Scheduled(cron = "0 30 0 * * ?")
+    @Scheduled(cron = "${upload.date}")
     public void run() {
         LocalDate dayBefore = LocalDate.now().minusDays(1);
         if (noCallRollDateService.exists(dayBefore)) return;
@@ -46,7 +57,10 @@ public class AutoAttendanceInsert {
             api.login();
             Integer statusCode = api.insert(outStudentIdList, dayBefore);
             if (statusCode == 200) {
-                System.out.println("insert successful!");
+                System.out.printf("---%s---%n", formatter.format(new Date()));
+                for (AttendanceRecord attendanceRecord : attendanceOutRecord) {
+                    System.out.println(attendanceRecord);
+                }
             }
         } catch (URISyntaxException | IOException | InterruptedException e) {
             e.printStackTrace();
