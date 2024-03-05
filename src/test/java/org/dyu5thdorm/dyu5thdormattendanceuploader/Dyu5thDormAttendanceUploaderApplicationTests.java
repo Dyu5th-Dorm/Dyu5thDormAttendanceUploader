@@ -25,6 +25,10 @@ class Dyu5thDormAttendanceUploaderApplicationTests {
 
     @Test
     void contextLoads() throws URISyntaxException, IOException, InterruptedException {
+        var a = attendanceRepo.findByAttendanceDateOut(
+                LocalDate.now().minusDays(1), 112, 2
+        ).size();
+        System.out.println(a);
     }
 
 }

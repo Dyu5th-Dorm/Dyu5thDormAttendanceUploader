@@ -15,6 +15,6 @@ public class NoCallRollDateService {
     }
 
     public boolean exists(LocalDate localDate) {
-        return noCallRollDateRepo.existsByDate(localDate);
+        return noCallRollDateRepo.existsByDay(localDate);
     }
 }

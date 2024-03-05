@@ -18,10 +18,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class NoCallRollDate {
     @Id
-    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Integer id;
-
-    @Column(name = "date")
-    LocalDate date;
+    @Column(name = "day")
+    LocalDate day;
 }

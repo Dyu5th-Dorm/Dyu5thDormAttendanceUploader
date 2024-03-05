@@ -58,8 +58,17 @@ public class AutoAttendanceInsert {
             Integer statusCode = api.insert(outStudentIdList, dayBefore);
             if (statusCode == 200) {
                 System.out.printf("---%s---%n", formatter.format(new Date()));
-                for (AttendanceRecord attendanceRecord : attendanceOutRecord) {
-                    System.out.println(attendanceRecord);
+                if (attendanceOutRecord.isEmpty()) {
+                    System.out.println("No one today.");
+                } else {
+                    for (AttendanceRecord attendanceRecord : attendanceOutRecord) {
+                        System.out.printf(
+                                "%s %s %s%n",
+                                attendanceRecord.getBed().getBedId(),
+                                attendanceRecord.getStudent().getStudentId(),
+                                attendanceRecord.getStudent().getName()
+                        );
+                    }
                 }
             }
         } catch (URISyntaxException | IOException | InterruptedException e) {
